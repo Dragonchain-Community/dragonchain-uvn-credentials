@@ -4,8 +4,9 @@
 SECRET=$(sudo kubectl get secrets -n dragonchain | grep -o 'd\-[a-z0-9-]*\-secrets')
 
 #extract the hmac-id and hmac-key
-HMAC_ID=$(sudo kubectl get secret -n dragonchain $SECRET -o json | jq -r .data.SecretString | base64 -d | jq '.["hmac-id"]' | grep -o '[^"]*')
-HMAC_KEY=$(sudo kubectl get secret -n dragonchain $SECRET -o json | jq -r .data.SecretString | base64 -d | jq '.["hmac-key"]' | grep -o '[^"]*')
+SECRETS=$(sudo kubectl get secret -n dragonchain $SECRET -o json | jq -r .data.SecretString | base64 -d)
+HMAC_ID=$(echo "$SECRETS" | jq -r '.["hmac-id"]')
+HMAC_KEY=$(echo "$SECRETS" | jq -r '.["hmac-key"]')
 
 #extract the pod name
 POD_NAME=$(kubectl get pod -n dragonchain -l app.kubernetes.io/component=webserver | tail -1 | awk '{print $1}')
