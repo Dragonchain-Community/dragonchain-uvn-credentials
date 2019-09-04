@@ -8,9 +8,7 @@ HMAC_ID=$(sudo kubectl get secret -n dragonchain $SECRET -o json | jq -r .data.S
 HMAC_KEY=$(sudo kubectl get secret -n dragonchain $SECRET -o json | jq -r .data.SecretString | base64 -d | jq '.["hmac-key"]' | grep -o '[^"]*')
 
 #extract the pod name
-PODLIST=$(sudo kubectl get pods -n dragonchain)
-
-POD_NAME=$(echo "$PODLIST" | grep -o '[a-zA-Z0-9]*\-webserver-[^-]*\-[a-zA-Z0-9]*')
+POD_NAME=$(kubectl get pod -n dragonchain -l app.kubernetes.io/component=webserver | tail -1 | awk '{print $1}')
 
 #extract the public id
 PUBLIC_ID=$(sudo kubectl exec -n dragonchain $POD_NAME -- python3 -c "from dragonchain.lib.keys import get_public_id; print(get_public_id())")
