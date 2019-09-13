@@ -4,7 +4,7 @@
 SECRET=$(sudo kubectl get secrets -n dragonchain | grep -o 'd\-[a-z0-9-]*\-secrets')
 
 #extract the hmac-id and hmac-key
-SECRETS=$(sudo kubectl get secret -n dragonchain $SECRET -o json | jq -r .data.SecretString | base64 -d)
+SECRETS=$(sudo kubectl get secret -n dragonchain $SECRET -o json | jq -r .data.SecretString | base64 -D)
 HMAC_ID=$(echo "$SECRETS" | jq -r '.["hmac-id"]')
 HMAC_KEY=$(echo "$SECRETS" | jq -r '.["hmac-key"]')
 
